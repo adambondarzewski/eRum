@@ -1,0 +1,405 @@
+# DAY #1 (Workshops)
+
+### Efficient R programming:
+
+1. [Workshop materials](https://www.jumpingrivers.com/t/2018-erum-efficient/#/)
+2. [Tutorial](https://github.com/jr-packages/efficientTutorial)
+
+#### .Rprofile:
+
+```{r remedy001}
+
+options(prompt  = ":D",
+        digits = 5,
+        Continue = " ") # (hide "+")
+
+```
+
+```{r remedy002}
+
+.First <- function() {
+  cat("\nWelcome at", date(), "\n")
+}
+.Last <- function() {
+  cat("Bye")
+}
+
+```
+ 
+### Clean R code
+
+1. Materials
+
+- [Cheatsheet](https://github.com/czeildi/erum-2018-clean-r-code/blob/infra/clean_r_code_cheatsheet_2018-05-08.pdf)
+- [code](https://github.com/czeildi/erum-2018-clean-r-code)
+
+2. Suggestions:
+- Function for every small functionality
+- You do not always need to create one large  function (it depends)
+- Function names should tell what tasks the accomplish, not what operations they perform, e.g inner_join -> wrapper add_country_metadata
+
+3. Sourcing every script in a file:
+
+```{r remedy003, eval = FALSE}
+
+purrr::walk(list.files("R", full.names = TRUE))
+
+
+```
+4. [Materials](gitgitgithub.com/czeildi/erum_2018_clean_r_code)
+
+5.
+
+  shortcut |  action
+  ------------- | -------------
+  Alt  + - | assignment operator
+  Ctrl + Alt + X | extract function from selection
+  CMD + I | reindent lines
+
+
+
+
+6. __Book: Robert C. Martin - Clean Code__
+
+### Building package that lasts (Colin Fay)
+
+1. [ThinkR](http://thinkr.fr)
+
+2. Tools:
+
+  - `desc #(editing description)`
+  - `usethis` https://github.com/r-lib/usethis
+  - `use_dev_package("callr")`
+  - `use_rcpp()`
+  - `use_test("my-test")`
+  - `use_data(x, y)`
+  - `use_tidy_description`
+  - `use_build_ignore`
+  - `available::available("ggplot2")`
+
+3. Everything you did during engeneering: 
+```{r remedy004}
+usethis::use_data_raw -> devstuff.R
+
+```
+
+4. Version number:
+
+- _major.minor.patch_
+- start: 0.0.0.9000
+- Increment +1 every bugfix
+
+5. `use_build_ignore` - creates regexes to buildignore
+
+6. Creating Dockerfiles for R code
+  - [containerit project](https://github.com/o2r-project/containerit)
+  - [containerit package](http://o2r.info/2017/05/30/containerit-package/)
+
+7. Investigating conflicts:
+
+```{r remedy005, echo = FALSE}
+
+tidyverse::tidyverse_conflicts
+
+```
+
+8. Dev oriented optimisation
+
+- "If copy something even twice - write a function"
+
+9. User oriented optimisation
+
+attempt package - stop_if_not, stop_if_any, stop_if_all
+
+10. Benchmarking
+
+
+```{r remedy006}
+
+library(magrittr)
+library(microbenchmark)
+library(ggplot2)
+
+microbenchmark(rchisq(100, 0),
+               rchisq(100, 1),
+               rchisq(100, 2),
+               rchisq(100, 3),
+               rchisq(100, 5), times=1000L) %>% autoplot()
+
+```
+
+New package: "bench"
+
+11. Suggestion: use R formats - RDS instead of csv
+
+12.
+
+```{r remedy007, eval=FALSE}
+
+skip_if_not(curl::has_internet())
+
+```
+
+13. Test with rhub:
+
+```{r remedy008, eval = FALSE}
+
+check_with_valgrind()
+
+```
+
+14 `Revdepcheck` - reverse dependency (for CRAN packages)
+
+15. [Temporarilly modifying global state using withr](https://github.com/r-lib/withr)
+
+16. [Addin for markdown reports](https://github.com/ThinkR-open/remedy)
+
+18. [Shiny app for adding prefixes to functions](https://github.com/dreamRs/prefixer)
+
+
+### Keras
+
+https://rstudio.github.io/reticulate/
+
+see scripts in rstudio (be attached later)
+
+# DAY 2 (Conference)
+
+### Rust code in R
+
+
+- https://github.com/r-rust 
+- https://github.com/r-rust/hellorust
+
+
+Why to use?
+- Safer, no pointers, memory leaks - it is memory safe
+- As safe as C
+- Native compiler for cross platform
+- No need of install anything else except R pkg containing compiled Rust code
+- Has version dependency
+- Compiled binary does not depend on Rust or Cargo libs
+
+Package [gifski](https://github.com/r-rust/gifski)
+
+
+### OO systems in R (S3)
+
+(generic.class/asDate.numer is equivalent to `summary.lm`
+
+```{r remedy009, eval = FALSE}
+
+# summary <- function(object, …)
+useMethod("summary")
+
+sum <- function(..., na.rm = FALSE)
+	.Primitive("sum")
+
+```
+
+
+
+Dispatch:
+`summary(lm(y~x))` → `summary.lm(lm(y~x))`ś
+
+Why to use:
+- Flexible & extensible
+- Complex types can inherit after simpler type
+
+
+Example:
+```{r remedy010, results= FALSE}
+
+dt <- data.table::data.table(mtcars)
+print.data.frame(dt)
+data.table:::print.data.table(dt)
+
+```
+
+
+TO check:
+
+- www.github.com/wch/r-source
+- Sloop pkg by Hadley
+
+Slides:
+
+- https://github.com/czeildi 
+- https://github.com/czeildi/erum2018-oop-essentials
+
+
+### Sentiment Analysis on Social Media and Big Data
+
+- R pkg "iSAX"
+
+### Taking inspiration from proven frontend frameworks to add to Shiny with 6 new packages (appsilon)
+
+- [Shiny.semantic](https://github.com/Appsilon/shiny.semantic) let’s you download semantic UI CSS packages, fully customazible https://cran.r-project.org/web/packages/shiny.semantic/index.html 
+
+- [Semantic.dashboard](https://github.com/Appsilon/semantic.dashboard) theme change easy (just put library(semantic.dashboard) instead of library(shiny.dashboard))
+- [Shiny.router](https://github.com/Appsilon/shiny.router) makes routing possible with shiny (let’s you pass the args in url)
+- [Shiny.router](https://github.com/Appsilon/shiny.router)  makes routing possible with shiny (let’s you pass the args in url)
+
+Just for Appsilon clients:
+
+- Shiny.users - access levels for users, authentication handled by shiny done on the app’s side. May be used with google account or ldap
+- Shiny.admin - collect stats about app’s activity (what was clicked, how long the session took, etc.)
+
+### Unified Content Analytics Process
+
+- [Formattable package](https://github.com/renkun-ken/formattable) https://cran.r-project.org/web/packages/formattable/vignettes/formattable-data-frame.html 
+- [rintrojs - interactive tutorials](https://github.com/carlganz/rintrojs)
+
+www.ioki.pl/blog
+
+
+### Erin LeDell: Scalable Automatic Machine Learning in R
+
+https://github.com/h2oai/h2o-meetups/tree/master/2018_05_15_eRum_AutoML_in_R
+
+### Szilard Pafka: Better than Deep Learning - Gradient Boosting Machines (GBM) in R
+
+- [Package LightGMB](https://github.com/Microsoft/LightGBM/tree/master/R-package)
+- [szilard/GBM-perf](https://github.com/szilard/GBM-perf)
+
+### Andrie de Vries: Tools for using TensorFlow with R
+
+[tfruns package](https://github.com/rstudio/tfruns)
+
+`ls_run()` → look for hyperparameters:
+
+Parameters can be flagged, e.g. number of runs can be set in list() and then best model can be chosen by ordering by modell accuracy
+
+`Cloudml`
+
+Books:
+Deeep learning with R
+Deeo Learning, Googfellow
+
+
+### Robin Lovelace: Geocomputation for Active transport planning: a case study of cycle network design
+
+https://cran.r-project.org/web/packages/robCompositions/index.html
+https://github.com/cran/robCompositions
+
+
+### Way to doing RNA-seq
+
+https://github.com/federicomarini/erum2018
+
+- R pkgs: "pcaExplorer", "ideal"
+- iSEE - interactiveSummarizedExperimentExplorer
+
+
+# DAY #3 (Conference)
+
+### A practical history of R (where things came from)
+
+- Henrik Bengtsson: A Future for R: Parallel and Distributed Processing in R for Everyone
+- https://github.com/HenrikBengtsson/future.batchtools
+- Shiny v1.1. Announced and will cointaint promises
+- radii.defer: Deferred execution of nested functions
+
+radii.cache
+
+Will be available: https://github.com/tdeenes/radii.defer
+
+
+### Barbara Borges: Drilldown data discovery with Shiny
+
+https://github.com/bborgesr/erum2018
+
+
+### Colin Gillespie: Getting the most out of GitHub and friends
+
+R CMD check --as-cran mypkg.tar.gz
+
+Travis
+Appveyor: https://www.appveyor.com/
+
+
+Arthur Charpentier: Demographics with Genealogical Data
+https://3wen.github.io/genealogy/
+
+
+### Simon Field: Exploiting Spark for high-performance scalable data engineering and data-science on Microsoft Azure
+
+Graph computation on Spark with R: https://www-03.ibm.com/services/learning/ites.wss/zz-en?pageType=badges&id=4fbc7101-62cf-48de-b47d-c3b9e28e4824
+
+
+
+
+
+### How to choose R package?
+
+- Crantastic: https://www.crantastic.org/
+- Metacran: https://www.r-pkg.org/
+- Rweekly: https://rweekly.org/
+
+Rmazing code
+- http://style.tidyverse.org/
+- [rOpenSci style guide](https://github.com/ropensci/onboarding/blob/master/packaging_guide.md)
+
+### Robust data pipelines
+[Drake R package](https://github.com/ropensci/drake)
+
+Tomaszilagyi.com
+
+
+### Achim Zeileis: R/exams -- A One-for-All Exams Generator
+
+- https://arsnova.uibk.ac.at/mobile/#
+- www.r-exams.org
+
+
+### Tracking changes in data with the lumberjack package
+
+https://github.com/data-cleaning/dcmodify 
+
+Lumberjack R pkg to track changes in data
+
+"daff" R package
+Edwin de Jonge: validatetools - resolve and simplify contradictive or redundant data validation rules
+https://github.com/data-cleaning/validatetools
+
+### Why to use validate?
+
+To create rule sets
+Detect conflicting rules
+
+```{r remedy011, eval = FALSE}
+
+rules <- validator( if (age < 16) income == 0
+                     , job %in% c("yes", "no")
+                     , if (job == "yes") income > 0)
+
+v <- confront(iris, rules)
+
+quality <- as.data.frame(v)
+merge(iris, quality)
+
+```
+
+
+### Andrea Melloncelli: What software engineers can teach to data scientists: code safety and … with automatic tests
+"Shinytest" pkg
+
+Testing upfront (Test Driven approach)
+
+### Wit Jakuczun: Know your R usage workflow to handle reproducibility challenges
+
+www.rsuite.io
+
+
+### Omayma Said: Fitting Humans Stories in List Columns: Cases From an Online Recruitment Platform
+
+```{r remedy012, eval = FALSE}
+
+tidyr::nest()
+tidyr::unnest()
+
+```
+
+- https://github.com/ropensci/solrium
+- http://lucene.apache.org/solr/guide/7_3/solr-tutorial.html
+- https://en.wikipedia.org/wiki/Apache_Solr
